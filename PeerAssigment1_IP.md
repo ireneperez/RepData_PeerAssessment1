@@ -232,7 +232,7 @@ m$day <- ifelse(!weekdays(as.Date(m[,2])) %in% c("Saturday", "Sunday"),
 
 2 - Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). The plot should look something like the following, which was creating using simulated data:
 
-
+  
 
 
 ```r
@@ -240,23 +240,22 @@ y <- subset(m,m$day=="weekday")
 AVWD <- aggregate.data.frame(y$ImpVal, list(y$interval), mean)
 names(AVWD) <- c("interval","AvgSteps") 
 
-plot(AVWD$interval,AVWD$AvgSteps,type="l", ylab="Avg Steps",xlab = "Interval", col = "blue")
-title("Average Weekday Steps per Interval")
-```
-
-![plot of chunk unnamed-chunk-11](figure/unnamed-chunk-11-1.png) 
-
-```r
 z <- subset(m,m$day=="weekend")
 AVWE <- aggregate.data.frame(z$ImpVal, list(z$interval), mean)
 names(AVWE) <- c("interval","AvgSteps") 
 
-plot(AVWE$interval,AVWE$AvgSteps,type="l", ylab="Avg Steps",xlab = "Interval", col = "red")
-title("Average Weekend Steps per Interval")
+newdata <- AVWD
+newdata$daytype <- 'Weekday' 
+r <- AVWE
+r$daytype <- 'Weekend' 
+newdata <- rbind(newdata,r)
+
+library(ggplot2)
+qplot(interval,AvgSteps,data=newdata,facets=daytype~., geom="line", 
+      ylab="Number of steps", main="Average Steps per Interval")
 ```
 
-![plot of chunk unnamed-chunk-11](figure/unnamed-chunk-11-2.png) 
-
+![plot of chunk unnamed-chunk-11](figure/unnamed-chunk-11-1.png) 
 
 
 End of Report
